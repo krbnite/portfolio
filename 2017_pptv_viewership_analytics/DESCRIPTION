@@ -1,0 +1,13 @@
+Package: pptvR
+Title: Generate PPTV Viewership Reports
+Version: 0.0.0.9000
+Authors@R: person("Kevin", "Urban", email = "kevin.ddu@gmail.com", role = c("aut", "cre"))
+Description: This package is used to load, parse, analyze, and report on viewership data received from PPTV.
+Depends: R (>= 3.3.3)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Imports: dplyr,
+    lubridate,
+    readxl
