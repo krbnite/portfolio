@@ -20,6 +20,7 @@ DATABASE = os.getenv('YOUTUBE_DATABASE')
 PORT = '5439'
 con = redshift.connect(USER, PASSWORD, HOST, DATABASE, port=PORT)
 # Redshift Target
+CONTENT_OWNER_ID = os.getenv('CONTENT_OWNER_ID')
 SCHEMA='analytics'
 TABLE='youtube_recent_video'
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     #-------------------------------------------
     # Get YouTube Channels
     #-------------------------------------------
-    name_to_id = data_api.get_channel_name_id_map(dapi)
+    name_to_id = data_api.get_channel_name_id_map(dapi, CONTENT_OWNER_ID)
     
     #-------------------------------------------
     # YouTube "Scrape"

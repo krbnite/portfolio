@@ -56,9 +56,9 @@ MAILTO="machine.said.go@gmail.com"
 # Cmd Format: <daily schedule> <script1> <chan_x> -y && <script2> <chan_x> -y
 #      where: <daily schedule> = <min> <hr> <monthday:*> <month:*> <weekday:*> 
 #------------------------------------------------------------------------------
-40 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_01 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py wwe --not-a-test
-50 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_02 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py uudd --not-a-test
-0  8 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_03 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py bellas --not-a-test
+40 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_01 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py channel_01 --not-a-test
+50 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_02 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py channel_02 --not-a-test
+0  8 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_03 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py channel_03 --not-a-test
 
 #============================================================================
 # Channel Report Email 

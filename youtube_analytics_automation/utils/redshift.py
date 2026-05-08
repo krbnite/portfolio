@@ -15,6 +15,6 @@ def update(scrapes, con, schema, table, chunksize=150, not_a_test=False):
         tbl = table
     else:          
         tbl = f'{table}_test'
-    print(f"Updating busgrp.{tbl} in Redshift")
+    print(f"Updating {schema}.{tbl} in Redshift")
     scrapes.to_sql(
         tbl, con, schema=schema, index=False, if_exists='append', chunksize=chunksize)

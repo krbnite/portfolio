@@ -35,7 +35,7 @@ def connect_to_reporting_api():
         'https://www.googleapis.com/auth/yt-analytics-monetary.readonly'
     ]
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=SCOPE,
-            message="Ya did sumpin' wrong, Bub!")
+            message="WARNING: Please configure OAuth 2.0")
     storage = Storage(STORAGE_CREDENTIALS_FILE)
     credentials = storage.get()   # Returns None if the file doesn't exist
     if credentials is None or credentials.invalid:
