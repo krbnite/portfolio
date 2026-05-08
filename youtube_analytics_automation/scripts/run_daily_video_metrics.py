@@ -6,15 +6,9 @@ import argparse
 from datetime import datetime
 import pytz
 
-
 from youtube_analytics_automation.api import data_api
 from youtube_analytics_automation.utils.registry import channel_name_to_id
-from youtube_analytics_automation.utils.aws import (
-    connect_to_redshift,
-    csv_to_s3,
-    s3_to_redshift,
-)
-
+from youtube_analytics_automation.utils import redshift, s3, csv
 
 #-------------------------------------------
 # Environment Vars
@@ -110,7 +104,7 @@ if __name__ == '__main__':
     #-------------------------------------------  
     timestamp = datetime.now(pytz.timezone('EST')).strftime('%H:%M:%S')
     print('\n', timestamp, 'Pushing CSV file to S3...')
-    csv_to_s3(localfile, args.s3_bucket, args.s3_key)
+    csv.to_s3(localfile, args.s3_bucket, args.s3_key)
 
 
     #-------------------------------------------
@@ -119,8 +113,8 @@ if __name__ == '__main__':
     iam_arn_role = args.iam_arn_role if args.iam_arn_role is not None else IAM_ARN_ROLE
     timestamp = datetime.now(pytz.timezone('EST')).strftime('%H:%M:%S')
     print('\n', timestamp, 'Transferring data from S3 to Redshift...')
-    con = connect_to_redshift(USER, PASSWORD, HOST, DATABASE, port=PORT)
-    s3_to_redshift(con, iam_arn_role, filename, args.s3_bucket, args.s3_key,
+    con = redshift.connect(USER, PASSWORD, HOST, DATABASE, port=PORT)
+    s3.to_redshift(con, iam_arn_role, filename, args.s3_bucket, args.s3_key,
         args.rs_schema, rs_table)
 
 

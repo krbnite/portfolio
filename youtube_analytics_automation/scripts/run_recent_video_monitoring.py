@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import argparse
 import pandas as pd
 
-from youtube_analytics_automation.utils.aws import connect_to_redshift, update_redshift
+from youtube_analytics_automation.utils import redshift 
 from youtube_analytics_automation.api import data_api 
 # from youtube_analytics_automation.utils.email import simple_email
 
@@ -18,7 +18,7 @@ PASSWORD = os.getenv('REDSHIFT_PASSWORD')
 HOST = os.getenv('REDSHIFT_HOST')
 DATABASE = os.getenv('YOUTUBE_DATABASE')
 PORT = '5439'
-con = connect_to_redshift(USER, PASSWORD, HOST, DATABASE, port=PORT)
+con = redshift.connect(USER, PASSWORD, HOST, DATABASE, port=PORT)
 # Redshift Target
 SCHEMA='analytics'
 TABLE='youtube_recent_video'
@@ -50,22 +50,31 @@ if __name__ == '__main__':
     #-------------------------------------------
     # YouTube "Scrape"
     #-------------------------------------------
-    # 1. Get channel uploads
-    # 2. Filter out recent uploads
+    #-----------------------------------------------------------
     # NOTE: It just so happens that in my particular use case,
     #    the time it took the different channels to get uploads
     #    was approximately in alphabetical order (i.e., "A" short,
     #    "Z" long), so I took advantage of this in order to get 
     #    as many scrapes as possible close to the hour mark 
+    #-----------------------------------------------------------
     alphabetic_names = list(name_to_id.keys())
     alphabetic_names.sort()
     scrapes = pd.DataFrame(columns=['video_id', 'title', 'views', 'likes', 
         'dislikes', 'time_scraped_est', 'time_uploaded_est'])
     for name in alphabetic_names:
         print('Working on '+name+'...')
+        # 1. Get channel uploads
         video_info = data_api.\
                 get_channel_uploads_video_metrics(dapi, name_to_id[name])
+        # 2. Filter out recent uploads
         latest = data_api.discard_content_older_than_7days(video_info)
+        #-----------------------------------------------------------
+        # NOTE FROM FUTURE: df.append is technically deprecated
+        # -- it wasn't a great way to do this anyway because it
+        #    could slow things down quite a bit
+        # -- growing lists in a loop than converting to a DataFrame
+        #    is the better way to go
+        #-----------------------------------------------------------
         scrapes = scrapes.append(latest, ignore_index=True)
     
     #-------------------------------------------
@@ -79,8 +88,8 @@ if __name__ == '__main__':
     if args.testing:
         print('This is only a test...')
         print('Updating Redshift...')
-        _ = update_redshift(scrapes, con, SCHEMA, TABLE, chunksize=150, not_a_test=False)
+        _ = redshift.update(scrapes, con, SCHEMA, TABLE, chunksize=150, not_a_test=False)
     else:
         print('Not a test!')
         print('Updating Redshift...')
-        _ = update_redshift(scrapes, con, SCHEMA, TABLE, chunksize=150, not_a_test=True)
+        _ = redshift.update(scrapes, con, SCHEMA, TABLE, chunksize=150, not_a_test=True)

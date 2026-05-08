@@ -8,7 +8,7 @@ from apiclient.http import MediaIoBaseDownload
 from io import FileIO
 import httplib2
 
-from youtube_analytics_automation.utils.aws import connect_to_redshift
+from youtube_analytics_automation.utils import redshift 
 
 load_dotenv() 
 USER = os.getenv("REDSHIFT_USER")
@@ -22,7 +22,7 @@ TABLE_NAME = 'youtube_reporting'
 CLIENT_SECRETS_FILE = os.getenv("CLIENT_SECRETS_FILE")
 STORAGE_CREDENTIALS_FILE = os.getenv("STORAGE_CREDENTIALS_FILE")
 
-con = connect_to_redshift(USER, PASSWORD, HOST, DATABASE, port=PORT)
+con = redshift.connect(USER, PASSWORD, HOST, DATABASE, port=PORT)
 ex = con.execute
 
 #----------------------------------------------------------------
@@ -36,7 +36,7 @@ def connect_to_reporting_api():
     ]
     flow = flow_from_clientsecrets(CLIENT_SECRETS_FILE, scope=SCOPE,
             message="Ya did sumpin' wrong, Bub!")
-    storage = Storage(CREDENTIALS_FILE)
+    storage = Storage(STORAGE_CREDENTIALS_FILE)
     credentials = storage.get()   # Returns None if the file doesn't exist
     if credentials is None or credentials.invalid:
             credentials = run_flow(flow, storage)

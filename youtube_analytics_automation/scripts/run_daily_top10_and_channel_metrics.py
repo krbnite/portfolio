@@ -4,7 +4,8 @@ import argparse
 import pytz
 from datetime import datetime
 
-from youtube_analytics_automation.utils.aws import connect_to_redshift
+from youtube_analytics_automation.utils import redshift 
+from youtube_analytics_automation.utils.registry import channel_name_to_id
 from youtube_analytics_automation.pipelines.daily_top10_and_channel_metrics import YouTubeDaily
 
 #-------------------------------------------
@@ -20,14 +21,7 @@ PORT = '5439'
 #-------------------------------------------
 # Redshift Connection
 #-------------------------------------------  
-con = connect_to_redshift(USER, PASSWORD, HOST, DATABASE, port=PORT)
-
-
-channel_name_to_id = {
-    'channel_01': 'channel_id_01', 
-    'channel_02': 'channel_id_02', 
-    'channel_03': 'channel_id_03'
-}
+con = redshift.connect(USER, PASSWORD, HOST, DATABASE, port=PORT)
 
 #-------------------------------------------
 # Main

@@ -1,0 +1,91 @@
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+
+#============================================================================
+# Email
+#============================================================================
+MAILTO="machine.said.go@gmail.com"
+
+#============================================================================
+# Channel Surfing: Updates Channel Playlist and Playlist Videos
+#   -- scheduled everyday @ 230, 430, 630, 830, 1030, and so on
+#============================================================================
+# <min> <list of hours> <any day of month> <any month> <any day of week> <cmd> 
+30 0,2,4,6,8,10,12,14,16,18,20,22 * * * /home/ubuntu/Automations/ytChannelSurfing/contentUpdate/ytContentUpdate.py
+
+
+#============================================================================
+# Daily Video Metrics: channel_01, channel_02, channel_03
+#   -- scheduled everyday @ 0200 or 0300 ET (0000 PT, 0700 UT)
+#============================================================================
+#-- NOTE: S3->RS transfer failed twice... Not sure why. 
+#--     In case too many cores were being used and/or DE was rejecting, I set it 
+#--     to run 30 mins before channel_01 and channel_02
+#-- UPDATE: After moving this back 30 mins, both channel_01 and channel_02 failed 
+#--     during the top10 portion (psycopg2.OperationalError: terminating connection 
+#--     due to administrator command; SSL connection has closed unexpectedly); so 
+#--     now all channels are staggered.
+#------------------------------------------------------------------------------
+# 1.   Daily lifetime video metrics must be pulled from DataAPI and append to
+#      the youtube_daily_video_metrics table (e.g., tot num of likes).
+# 2a.  Daily incremental video metrics are computed by differencing today's
+#      lifetime count with yesterday's.
+# 2b.  Daily channel-level engagement metrics are computed by summing the day's 
+#      incremental metric counts across all videos from the channel.
+#------------------------------------------------------------------------------
+# Cmd Format: <daily schedule> <script1> <chan_x> -y && <script2> <chan_x> -y
+#      where: <daily schedule> = <min> <hr> <monthday:*> <month:*> <weekday:*> 
+#------------------------------------------------------------------------------
+40 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_01 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py wwe --not-a-test
+50 7 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_02 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py uudd --not-a-test
+0  8 * * * /home/ubuntu/Automations/youtube/daily/video_metrics/youtube_daily_video_metrics.py channel_03 --not-a-test && /home/ubuntu/Automations/youtube/daily/top10/youtube_daily_top10_and_channel_metrics.py bellas --not-a-test
+
+#============================================================================
+# Channel Report Email 
+#============================================================================
+# Schedule: <minute> <hour> <any day of month> <any month> <any day of week> <cmd> 
+# hour 15 for wintery half of year; 14 for summery part = 10am ET
+# -- intentionally staggered
+59 13 * * * /home/ubuntu/Automations/youtube/daily/email/youtube_daily_channel_report.py channel_01 --not-a-test
+0  14 * * * /home/ubuntu/Automations/youtube/daily/email/youtube_daily_channel_report.py channel_02 --not-a-test
+1  14 * * * /home/ubuntu/Automations/youtube/daily/email/youtube_daily_channel_report.py channel_03 --not-a-test
+
+
+#============================================================================
+# Hourly Scrape
+#  -- used to run in "eternal python loop", but a crash could mean no data 
+#     collection for days
+#============================================================================
+#-- Original scraper...
+#-- 59 * * * * /home/ubuntu/Automations/youtube_recent/youtube_recent.py
+# NEW SCRAPER
+# <top of hour> <every hour> <every day of month> <every month> <every day of week> <cmd> 
+0 * * * * /home/ubuntu/Automations/youtube/hourly/recent/youtube_recent.py --not-a-test
+
+
+#============================================================================
+# Crontab Backup   
+#  -- backs up this file 1x/wk
+#============================================================================
+# <top of hour> <midnight> <any day of month> <every month> <0th day of week> <cmd> 
+0 0 * * 0 /home/ubuntu/Automations/crontab_backup/crontab_backup.bash
