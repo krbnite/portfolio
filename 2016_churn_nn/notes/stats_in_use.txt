@@ -1,0 +1,154 @@
+--------------------------------------------------------------
+AUC (Area Under Curve)
+--------------------------------------------------------------
+
+
+--------------------------------------------------------------
+Concordant, Discordant, & Tied Pairs
+--------------------------------------------------------------
+* a "concordant pair" is a pair of observations, {x1,y1} and {x2,y2}, where
+  sgn(x2-x1) = sgn(y2-y1) 
+  -- e.g., on a line, equality would indicate a positive slope, while
+* a "discordant pair" is a pair of observations where
+  sgn(x2-x1) = -sgn(y2-y1)
+  -- e.g., on a line, this indicates a negative slope
+* a "tied pair" occurs if xi=xj xOr if yi=yj
+  -- if a pair is neither concordant or discordant, then no relationship is 
+  suggested
+  -- e.g., if sgn(x2-x1)=1, but sgn(y2-y1)=0, then this pair
+     does not indicate a positive or negative relationship, and 
+     possibly indicates no relationship or perhaps a nonlinear
+     relationship; however, even a linear relationship cannot
+     be ruled out based on one pair of observations (one would have 
+     to look at many more pairs to really be able to tell)
+* Why is this important?
+  -- the Kendall tau rank correlation coefficient between two vars X and Y
+     is proportional to the difference between the number of concordant pairs
+     and the number discordant pairs:
+       tau ~ a*(Nc-Nd)
+  -- an estimate of Goodman&Kruskal's Gamma is given by the ratio:
+             (Nc-Nd)/(Ns+Nd)
+
+
+--------------------------------------------------------------
+Goodman & Kruskal's Gamma
+--------------------------------------------------------------
+* a measure of rank correlation (i.e., a measure of ordinal association)
+* good ref:
+  http://www.statisticssolutions.com/ordinal-association/
+
+
+--------------------------------------------------------------
+Kendall's Tau
+--------------------------------------------------------------
+* a measure of rank correlation
+* the tau test is a nonparametric hypothesis test for statistical dependence
+  based on Kendall's tau
+* while Spearman's Rho takes into account how different in rank two observations are,
+  Kendall's Tau only asks if they are different or equal (thus Kendall's Tau cannot
+  be used on unbinned continuous variables, though Spearman's Rho can)
+* read more: 
+   https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient
+* there are three types of tau, depending how one treats tied pairs:  tau-a, tau-b, and tau-c
+  https://en.wikipedia.org/wiki/Kendall_rank_correlation_coefficient#Accounting_for_ties
+
+
+--------------------------------------------------------------
+Ordinal Variable
+--------------------------------------------------------------
+* variables categorized in an integer-ordered format
+  -- e.g., g={female|male|other} is not an ordinal variable
+  -- e.g., p={first|second|third} is an ordinal variable
+  -- less obvious example: degree of education:  
+     e={someHighSchool|highSchool|someCollege|college|etc}
+* a numeric/continuous variable is not considered an ordinal variable, but
+  can be put into an ordinal format by binning values
+  -- e.g., salary in [0,inf) --> binnedSal in {[0-30),[30-60),[60-90),[90,inf)}
+* crosstabulation (aka contingency/bivariate tables) is often used to examine
+  statistical relationships between ordinal variables
+* good ref:
+  http://www.statisticssolutions.com/ordinal-association/
+
+
+--------------------------------------------------------------
+P Value
+--------------------------------------------------------------
+e.g., when evaluating our models, we write "Pr > ChiSq" and often look for it
+to be <0.0001.  It is the p value we are referencing when we write "Pr > ChiSq."
+
+
+
+--------------------------------------------------------------
+Measures of Rank Correlation / Ordinal Association
+--------------------------------------------------------------
+* Goodman & Kruskal's Gamma
+* Spearman's Rho
+* Kendall's Tau
+
+
+
+--------------------------------------------------------------
+Restrictive Model 
+--------------------------------------------------------------
+This is a relative term:  a model becomes more restrictive with less predictors.  If we have
+a data set and are deciding whether or not we should use 3 vars or actually need only two of
+them, then the 2-var model is more restrictive than the 3-var model (i.e., the 3-var model is less
+restrictive than the 2-var model).  This terminology makes sense when you consider that in a
+more restrictive model, more of the potential variable coefficients are restricted/assigned to 
+zero.
+
+
+--------------------------------------------------------------
+Somers' D
+--------------------------------------------------------------
+* in relation to "association of predicted probabilities and observed responses", percent concordant,
+  percent discordant, Gamma, Tau-a
+* def:  a measure of ordinal association between two possibly dependent random variables X and Y
+   -- "ordinal association" is another term for "rank correlation"
+   -- or more accurately, a "rank correlation" is any of several statistics that measure an "ordinal
+      association" 
+   -- an "ordinal association" is a relationship between "rankings" of different "ordinal" varaibles
+      (or different rankings of the same variable)
+   -- a "ranking" is an assignment of 1, 2, 3, ... to different observations of a particular var
+   -- a "rank correlation coefficient" measures the degree of similarity between two rankings, and
+      can be used to assess the significance of the relation between them 
+* good ref:
+  http://www.statisticssolutions.com/ordinal-association/
+
+
+--------------------------------------------------------------
+Standard Error
+--------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------
+Wald Test
+--------------------------------------------------------------
+* Wald Chi Square: refers to our use of the Wald test
+  -- parametric statistical test to evaulate a sample estimate, e.g., coefficients of a linear mdoel
+  -- ex data set (person {id}, class {low|mid|high}, shoe size {1:15}):
+        * say you tried to fit a regression:  
+                  class = a + b*shoeSize                 
+        * you estimate of b might appear nonzero, but is it really significantly different
+          than zero?
+        * use Wald test to determine whether b=0 (no association of class and shoe size) 
+          or nonzero
+  -- alternatives:  
+        * likelihood ratio test (generally seems to be highly esteemed)
+        * lagrange multiplier test (aka score test)
+  -- Great resource:
+    http://www.ats.ucla.edu/stat/mult_pkg/faq/general/nested_tests.htm
+        * Both the Wald and the score tests are asymptotically equivalent to the lr test, 
+          -- i.e., as the sample size becomes infinitely large, the values of the Wald and 
+             score test statistics will become increasingly close to the test statistic 
+             from the lr test
+        * In finite samples, the three will tend to generate somewhat different test statistics, 
+          but will generally come to the same conclusion
+        * When computing power was limited, being able to approximate the lr test using a 
+          single model was a fairly major advantage. However, computational time is no longer
+          a huge issue for many researchers, and the likelihood ratio test is therefore
+          recommended in most situations
+          -- however, The advantage of the score test is that it can be used to search 
+             for omitted variables when the number of candidate variables is large.
